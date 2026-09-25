@@ -1,6 +1,5 @@
-def _format_currency(cents):
-    return f"${cents / 100:.2f}"
+from sample_app.common.currency import format_currency
 
 
 def get_invoice_total(line_item_cents):
-    return _format_currency(sum(line_item_cents))
+    return format_currency(sum(line_item_cents))
