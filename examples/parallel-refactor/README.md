@@ -4,7 +4,9 @@ A minimal, runnable example of the [agent teams](../../README.md) pattern: split
 a refactor that spans several independent modules across one teammate per
 module, each isolated in its own git worktree so they can't step on each
 other's edits. Teammates only edit — nothing is committed until you review the
-combined diff and approve it, and nothing is pushed until then either.
+combined diff and approve it. On approval, the result lands on a fresh branch
+created for that run; the branch you started from is never committed or
+pushed to directly.
 
 This is a different shape of team than
 [`multi-perspective-code-review`](../multi-perspective-code-review/): that
@@ -32,9 +34,11 @@ dispatched three times with a different module assigned each time.
   each **in parallel** (single message, three `Agent` calls), then shows you
   the combined diff and each teammate's check result and asks — via
   `AskUserQuestion`, a real approval gate, not just asking in text — whether
-  to commit and push or discard. Only on approval does it commit each branch,
-  merge them back, and push; a decline discards every worktree's edits
-  unmerged and unpushed.
+  to commit or discard. On approval, it commits each branch, merges them onto
+  a brand new `team-refactor/<timestamp>` branch (never onto the branch you
+  ran the command from), verifies the merged result still passes `check.py`,
+  and pushes that new branch. A decline discards every worktree's edits —
+  nothing is committed, merged, or pushed, and no new branch is created.
 
 ## Running it
 
@@ -50,7 +54,10 @@ Each teammate works in `../agent-teams-worktrees/<module>` (a sibling
 directory to this repo, created and removed by the command) so three agents
 can edit the repo at once without racing each other on the same working tree.
 You'll see each module's diff and be asked to approve before anything is
-committed or pushed.
+committed. If you approve, the merged refactor is pushed on its own
+`team-refactor/<timestamp>` branch — the branch you ran the command from
+(likely `main`) is left exactly as it was, so `sample_app/` stays in its
+"before" state for the next run.
 
 ## Why worktrees here and not just parallel `Edit` calls in one working tree
 
@@ -77,3 +84,7 @@ branches.
 4. Keep the approval gate. Teammates writing code unattended across several
    modules is exactly the case where a human should see the diff before
    anything lands — don't let the orchestrator skip straight to commit+push.
+5. Keep the fresh-branch rule. Never let the orchestrator commit or push
+   directly to the branch it was run from (often your default branch) — always
+   land the result on a new branch and let a PR (or a second explicit
+   approval) be the gate for merging it further.
