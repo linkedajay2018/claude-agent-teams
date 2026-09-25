@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate-examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Compile-check example Python sources
+        run: |
+          set -e
+          find examples -name '*.py' -print0 | xargs -0 -n1 python -m py_compile
+
+      - name: Check subagent/command frontmatter
+        run: |
+          set -e
+          files=$(find examples \( -path '*/.claude/agents/*.md' -o -path '*/.claude/commands/*.md' \))
+          if [ -z "$files" ]; then
+            echo "No agent/command files found under examples/"; exit 1
+          fi
+          for f in $files; do
+            first_line=$(sed -n '1p' "$f")
+            closing_line=$(sed -n '2,$p' "$f" | grep -n '^---$' | head -n1 | cut -d: -f1)
+            if [ "$first_line" != "---" ] || [ -z "$closing_line" ]; then
+              echo "::error file=$f::missing or malformed YAML frontmatter"
+              exit 1
+            fi
+            if ! grep -q '^description:' "$f"; then
+              echo "::error file=$f::frontmatter missing 'description:'"
+              exit 1
+            fi
+          done
+          echo "All $(echo "$files" | wc -l) agent/command files have valid frontmatter."
