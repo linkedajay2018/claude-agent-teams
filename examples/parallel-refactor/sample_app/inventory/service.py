@@ -1,6 +1,5 @@
-def _format_currency(cents):
-    return f"${cents / 100:.2f}"
+from sample_app.common.currency import format_currency
 
 
 def get_restock_cost(unit_cost_cents, quantity):
-    return _format_currency(unit_cost_cents * quantity)
+    return format_currency(unit_cost_cents * quantity)
