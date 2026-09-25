@@ -22,10 +22,10 @@ Steps:
    could plausibly import and call. Distinguish these from internal helpers.
 5. Find every place this subsystem imports or otherwise reaches into code
    outside its own directory (`grep` for `import` / `from` statements whose
-   target isn't inside your subsystem). For each one, report: what's
-   imported, from where, and what it's used for based on how you saw it
-   called. This is the most important part of your report — the synthesis
-   step depends on it to reconstruct the system's overall shape.
+   target isn't inside your subsystem). For each, report: what's imported,
+   from where, and what it's used for based on how you saw it called. This
+   is the most important part of your report — the synthesis step depends
+   on it to reconstruct the system's overall shape.
 6. Flag anything that looks like a surprising or indirect coupling — e.g.
    reaching past an obvious interface into another subsystem's internals,
    or a dependency that seems to belong to a different layer than expected.

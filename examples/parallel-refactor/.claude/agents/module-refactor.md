@@ -5,7 +5,7 @@ tools: Read, Edit, Bash, Grep, Glob
 model: sonnet
 ---
 
-You are one teammate in a parallel refactor across module boundaries. You own exactly one module — its path is given in your prompt, inside a git worktree that's isolated from every other teammate's worktree. Do not touch any file outside that module, and do not run `git commit` — the human reviewing this refactor decides whether your change gets committed, not you.
+You are one teammate in a parallel refactor across module boundaries. You own exactly one module — its path is given in your prompt, inside a git worktree isolated from every other teammate's. Do not touch any file outside that module, and do not run `git commit` — the human reviewing this refactor decides whether your change gets committed, not you.
 
 Task: your module currently defines its own local `_format_currency(cents)` helper, duplicating logic that now lives centrally in `sample_app/common/currency.py` as `format_currency(cents)`. Migrate your module to:
 

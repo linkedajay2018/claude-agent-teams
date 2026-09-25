@@ -17,11 +17,11 @@ Task:
 - If you're the **producer**: update the function that builds the event to
   accept the new field(s) as parameter(s) and include them in the emitted
   event dict, matching the exact name(s) and type(s) you were given. Getting
-  the name wrong here breaks every consumer, even ones you never see.
+  the name wrong breaks every consumer, even ones you never see.
 - If you're a **consumer**: update the handler function to read the new
   field(s) from the incoming event and incorporate them into whatever it
-  returns or reports. Don't just accept the field silently without using
-  it — the contract test that runs after every teammate finishes checks that
+  returns or reports. Don't just accept the field silently without using it
+  — the contract test that runs after every teammate finishes checks that
   each consumer actually incorporates the new field, not merely that it
   doesn't crash.
 

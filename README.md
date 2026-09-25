@@ -4,25 +4,25 @@ Working examples of the "agent teams" pattern in [Claude Code](https://claude.co
 splitting a task across multiple specialized subagents — each with its own scoped
 tools, prompt, and role — instead of one agent handling everything serially.
 
-Each example under [`examples/`](examples/) is self-contained: its own sample
-code, its own `.claude/agents/*.md` subagent definitions, its own orchestrating
-slash command, and its own README with instructions to run it as-is.
+Each example under [`examples/`](examples/) is self-contained: sample code, its
+own `.claude/agents/*.md` subagent definitions, an orchestrating slash command,
+and a README to run it as-is.
 
 ## Examples
 
 - [`multi-perspective-code-review/`](examples/multi-perspective-code-review/) —
-  three subagents (security, performance, correctness) review the same diff in
-  parallel; their findings are merged into one ranked report.
+  security, performance, and correctness subagents review the same diff in
+  parallel; findings merge into one ranked report.
 - [`parallel-refactor/`](examples/parallel-refactor/) — one teammate per
-  module, each isolated in its own git worktree, migrating off a duplicated
-  helper in parallel; branches are verified and merged back at the end.
+  module, each in its own git worktree, migrates off a duplicated helper in
+  parallel; branches are verified and merged back.
 - [`parallel-codebase-exploration/`](examples/parallel-codebase-exploration/) —
-  one read-only teammate per subsystem maps its own corner of an unfamiliar
-  repo concurrently; their reports are synthesized into one architecture
-  document, including couplings no single teammate could see alone.
-- [`architecture-spike/`](examples/architecture-spike/) — several competing
-  approaches to the same problem, each prototyped in parallel in its own
-  worktree, benchmarked objectively, and compared before a human picks a
+  one read-only teammate per subsystem maps its corner of an unfamiliar repo
+  concurrently; reports synthesize into one architecture document, including
+  couplings no single teammate could see alone.
+- [`architecture-spike/`](examples/architecture-spike/) — competing
+  approaches to the same problem, prototyped in parallel in separate
+  worktrees, benchmarked objectively, and compared before a human picks a
   winner to commit.
 - [`cross-service-change/`](examples/cross-service-change/) — one teammate
   finalizes a shared event contract first, then one teammate per
