@@ -13,11 +13,12 @@ slash command, and its own README with instructions to run it as-is.
 - [`multi-perspective-code-review/`](examples/multi-perspective-code-review/) —
   three subagents (security, performance, correctness) review the same diff in
   parallel; their findings are merged into one ranked report.
+- [`parallel-refactor/`](examples/parallel-refactor/) — one teammate per
+  module, each isolated in its own git worktree, migrating off a duplicated
+  helper in parallel; branches are verified and merged back at the end.
 
 More examples land here over time. Other use cases this pattern fits well:
 
-- **Parallel refactors across module boundaries** — one teammate per
-  module/service, each in its own worktree.
 - **Architecture spikes / bake-offs** — prototype competing approaches in
   parallel and compare results.
 - **Cross-service coordinated changes** — one agent per microservice, keeping a
