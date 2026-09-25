@@ -28,11 +28,15 @@ merged into one report.
 Inside Claude Code, from this directory:
 
 ```
-/team-review
+/team-review fd58704..e2fb40a
 ```
 
-(defaults to reviewing `HEAD~1..HEAD`, i.e. the seeded PR commit). Or pass an
-explicit range: `/team-review main..my-branch`.
+That range is the seeded PR: `fd58704` is the clean baseline, `e2fb40a` adds the
+three bugs described above. Run `/team-review` with no argument to review
+`HEAD~1..HEAD` instead — useful once you're using this pattern on your own
+commits, but note that range will no longer point at the seeded bugs once this
+repo has more history on top of it. Or pass any other range: `/team-review
+main..my-branch`.
 
 ## Adapting this to a real repo
 
