@@ -3,7 +3,8 @@
 A minimal, runnable example of the [agent teams](../../README.md) pattern: split
 a refactor that spans several independent modules across one teammate per
 module, each isolated in its own git worktree so they can't step on each
-other's edits, then merge the results back.
+other's edits. Teammates only edit — nothing is committed until you review the
+combined diff and approve it, and nothing is pushed until then either.
 
 This is a different shape of team than
 [`multi-perspective-code-review`](../multi-perspective-code-review/): that
@@ -23,12 +24,17 @@ dispatched three times with a different module assigned each time.
   not a behavior change.
 - `.claude/agents/module-refactor.md` — a single subagent definition (`Read`,
   `Edit`, `Bash`, `Grep`, `Glob`) that performs the migration for exactly one
-  module, wherever it's told to look. The same definition is reused for every
-  teammate; only the assigned module path differs per dispatch.
+  module, wherever it's told to look, and stops without committing. The same
+  definition is reused for every teammate; only the assigned module path
+  differs per dispatch.
 - `.claude/commands/team-refactor.md` — the orchestrator. Creates one git
   worktree + branch per module, dispatches a `module-refactor` teammate into
-  each **in parallel** (single message, three `Agent` calls), verifies each
-  touched only its own module, then merges all three branches back.
+  each **in parallel** (single message, three `Agent` calls), then shows you
+  the combined diff and each teammate's check result and asks — via
+  `AskUserQuestion`, a real approval gate, not just asking in text — whether
+  to commit and push or discard. Only on approval does it commit each branch,
+  merge them back, and push; a decline discards every worktree's edits
+  unmerged and unpushed.
 
 ## Running it
 
@@ -43,6 +49,8 @@ Or name specific modules: `/team-refactor billing shipping`.
 Each teammate works in `../agent-teams-worktrees/<module>` (a sibling
 directory to this repo, created and removed by the command) so three agents
 can edit the repo at once without racing each other on the same working tree.
+You'll see each module's diff and be asked to approve before anything is
+committed or pushed.
 
 ## Why worktrees here and not just parallel `Edit` calls in one working tree
 
@@ -63,5 +71,9 @@ branches.
 2. Copy `.claude/commands/team-refactor.md` and point step 1's module list at
    your repo's real module/service directories.
 3. Keep a check step (tests, a smoke script, a type check) that each teammate
-   must pass before committing — it's what makes "did the refactor actually
-   preserve behavior" verifiable per module instead of only at the end.
+   must pass before reporting back — it's what makes "did the refactor
+   actually preserve behavior" verifiable per module instead of only at the
+   end.
+4. Keep the approval gate. Teammates writing code unattended across several
+   modules is exactly the case where a human should see the diff before
+   anything lands — don't let the orchestrator skip straight to commit+push.
