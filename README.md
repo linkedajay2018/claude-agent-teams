@@ -16,6 +16,10 @@ slash command, and its own README with instructions to run it as-is.
 - [`parallel-refactor/`](examples/parallel-refactor/) — one teammate per
   module, each isolated in its own git worktree, migrating off a duplicated
   helper in parallel; branches are verified and merged back at the end.
+- [`parallel-codebase-exploration/`](examples/parallel-codebase-exploration/) —
+  one read-only teammate per subsystem maps its own corner of an unfamiliar
+  repo concurrently; their reports are synthesized into one architecture
+  document, including couplings no single teammate could see alone.
 
 More examples land here over time. Other use cases this pattern fits well:
 
@@ -27,8 +31,6 @@ More examples land here over time. Other use cases this pattern fits well:
   deploys, another drafts the postmortem timeline, concurrently.
 - **Background long-running work** — delegate a slow task (dependency upgrade,
   doc sprint) to a background teammate while you keep working in the foreground.
-- **Parallel codebase exploration** — map different subsystems of an unfamiliar
-  repo concurrently, then synthesize one mental model.
 
 ## How the pattern works in Claude Code
 
