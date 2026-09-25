@@ -1,47 +1,46 @@
-# agent-teams: multi-perspective code review demo
+# claude-agent-teams
 
-A minimal, runnable example of Claude Code's "agent teams" pattern: instead of one
-agent switching between security/performance/correctness lenses on a diff, three
-specialized subagents review the same change in parallel and their findings get
-merged into one report.
+Working examples of the "agent teams" pattern in [Claude Code](https://claude.com/claude-code):
+splitting a task across multiple specialized subagents — each with its own scoped
+tools, prompt, and role — instead of one agent handling everything serially.
 
-## Pieces
+Each example under [`examples/`](examples/) is self-contained: its own sample
+code, its own `.claude/agents/*.md` subagent definitions, its own orchestrating
+slash command, and its own README with instructions to run it as-is.
 
-- `sample_app/api.py` — a tiny in-memory order service. Commit 1 (`fd58704`) is a
-  clean baseline. Commit 2 (`e2fb40a`) is the "PR" under review — it seeds three
-  independent bugs, one per lens:
-  - **Security**: `authenticate` runs `eval(token)` on caller input.
-  - **Performance**: `deduplicate_orders` does an O(n²) linear scan (`if o not in
-    seen`, a list) instead of an O(1) set lookup.
-  - **Correctness**: `apply_discount(order, code, history=[])` uses a mutable
-    default argument, so `history` leaks state across calls.
-- `.claude/agents/security-reviewer.md`, `performance-reviewer.md`,
-  `correctness-reviewer.md` — custom subagents, each restricted to read-only
-  tools (`Read`, `Grep`, `Glob`, `Bash`) and scoped by its `description` and
-  system prompt to only its one lens.
-- `.claude/commands/team-review.md` — the orchestrator. Computes the diff once,
-  dispatches all three reviewers **in parallel** (single message, three `Agent`
-  calls), then merges and ranks their findings via the `ReportFindings` tool.
+## Examples
 
-## Running it
+- [`multi-perspective-code-review/`](examples/multi-perspective-code-review/) —
+  three subagents (security, performance, correctness) review the same diff in
+  parallel; their findings are merged into one ranked report.
 
-Inside Claude Code, from this directory:
+More examples land here over time. Other use cases this pattern fits well:
 
-```
-/team-review
-```
+- **Parallel refactors across module boundaries** — one teammate per
+  module/service, each in its own worktree.
+- **Architecture spikes / bake-offs** — prototype competing approaches in
+  parallel and compare results.
+- **Cross-service coordinated changes** — one agent per microservice, keeping a
+  shared contract (API schema, event format) in sync via messages.
+- **Incident response triage** — one agent tails logs, another correlates
+  deploys, another drafts the postmortem timeline, concurrently.
+- **Background long-running work** — delegate a slow task (dependency upgrade,
+  doc sprint) to a background teammate while you keep working in the foreground.
+- **Parallel codebase exploration** — map different subsystems of an unfamiliar
+  repo concurrently, then synthesize one mental model.
 
-(defaults to reviewing `HEAD~1..HEAD`, i.e. the seeded PR commit). Or pass an
-explicit range: `/team-review main..my-branch`.
+## How the pattern works in Claude Code
 
-## Adapting this to a real repo
+- **`.claude/agents/*.md`** — custom subagent definitions. Frontmatter
+  (`name`, `description`, `tools`, `model`) scopes what the subagent can touch
+  and when it should trigger; the body is its system prompt.
+- **`.claude/commands/*.md`** — slash commands that orchestrate: compute shared
+  context once, dispatch multiple subagents in parallel (a single message with
+  multiple `Agent` tool calls), then merge their results.
+- New `.claude/agents/*.md` files are picked up at session start, not
+  hot-reloaded — start a fresh Claude Code session in a repo after adding or
+  editing agent definitions there.
 
-1. Copy `.claude/agents/*.md` into your repo (or your `~/.claude/agents/` for a
-   global copy).
-2. Adjust each agent's `tools:` and `description:` frontmatter to fit your repo's
-   conventions — add more lenses (e.g. `test-coverage-reviewer`,
-   `api-compat-reviewer`) the same way.
-3. Copy `.claude/commands/team-review.md` and point it at your PR/branch naming
-   convention.
-4. For a heavier-weight version of this same idea already built into Claude
-   Code, see `/code-review ultra`, which runs a multi-agent review in the cloud.
+## License
+
+[MIT](LICENSE)
