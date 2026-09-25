@@ -20,11 +20,13 @@ slash command, and its own README with instructions to run it as-is.
   one read-only teammate per subsystem maps its own corner of an unfamiliar
   repo concurrently; their reports are synthesized into one architecture
   document, including couplings no single teammate could see alone.
+- [`architecture-spike/`](examples/architecture-spike/) — several competing
+  approaches to the same problem, each prototyped in parallel in its own
+  worktree, benchmarked objectively, and compared before a human picks a
+  winner to commit.
 
 More examples land here over time. Other use cases this pattern fits well:
 
-- **Architecture spikes / bake-offs** — prototype competing approaches in
-  parallel and compare results.
 - **Cross-service coordinated changes** — one agent per microservice, keeping a
   shared contract (API schema, event format) in sync via messages.
 - **Incident response triage** — one agent tails logs, another correlates
