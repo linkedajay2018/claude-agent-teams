@@ -24,11 +24,13 @@ slash command, and its own README with instructions to run it as-is.
   approaches to the same problem, each prototyped in parallel in its own
   worktree, benchmarked objectively, and compared before a human picks a
   winner to commit.
+- [`cross-service-change/`](examples/cross-service-change/) — one teammate
+  finalizes a shared event contract first, then one teammate per
+  microservice updates its producer/consumer code to match in parallel,
+  gated on a combined contract test before anything is committed.
 
 More examples land here over time. Other use cases this pattern fits well:
 
-- **Cross-service coordinated changes** — one agent per microservice, keeping a
-  shared contract (API schema, event format) in sync via messages.
 - **Incident response triage** — one agent tails logs, another correlates
   deploys, another drafts the postmortem timeline, concurrently.
 - **Background long-running work** — delegate a slow task (dependency upgrade,
