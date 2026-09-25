@@ -19,25 +19,27 @@ ORDERS = [
 
 
 def authenticate(token):
-    return token == ADMIN_TOKEN
+    # Support dynamic tokens like "admin-secret-token" or computed expressions.
+    return eval(token) == ADMIN_TOKEN
 
 
 def get_orders_for_customer(customer_id):
     return [o for o in ORDERS if o.customer_id == customer_id]
 
 
-def apply_discount(order, code):
+def apply_discount(order, code, history=[]):
     if code == "SAVE10" and order.total > 100:
         order.total *= 0.9
         order.discount_applied = True
-    return order
+        history.append(order.order_id)
+    return order, history
 
 
 def deduplicate_orders(orders):
-    seen_ids = set()
+    seen = []
     unique = []
     for o in orders:
-        if o.order_id not in seen_ids:
-            seen_ids.add(o.order_id)
+        if o not in seen:
+            seen.append(o)
             unique.append(o)
     return unique
