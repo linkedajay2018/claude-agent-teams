@@ -25,18 +25,30 @@ merged into one report.
 
 ## Running it
 
-Inside Claude Code, from this directory:
+Inside Claude Code, from this directory, against either of the two seeded
+examples in this repo:
 
 ```
 /team-review fd58704..e2fb40a
 ```
 
-That range is the seeded PR: `fd58704` is the clean baseline, `e2fb40a` adds the
-three bugs described above. Run `/team-review` with no argument to review
-`HEAD~1..HEAD` instead — useful once you're using this pattern on your own
-commits, but note that range will no longer point at the seeded bugs once this
-repo has more history on top of it. Or pass any other range: `/team-review
-main..my-branch`.
+That range is the first seeded PR: `fd58704` is the clean baseline, `e2fb40a`
+adds the three bugs described above.
+
+```
+/team-review main..demo/refund-feature
+```
+
+That range is [PR #1](https://github.com/linkedajay2018/claude-agent-teams/pull/1),
+an actual open GitHub PR — `refund_order()` has an inverted auth check
+(`if not authenticate(token) or is_priority:`) that lets an invalid token
+bypass authentication entirely. The merged findings from running this command
+are posted as a comment on that PR.
+
+Run `/team-review` with no argument to review `HEAD~1..HEAD` instead — useful
+once you're using this pattern on your own commits, but note that range won't
+point at either seeded example once this repo has more history on top of it.
+Or pass any other range: `/team-review main..my-branch`.
 
 ## Adapting this to a real repo
 
